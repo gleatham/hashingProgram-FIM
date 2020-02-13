@@ -95,7 +95,7 @@ def main():
 
     #Below commented code works. Refactoring to accept dictionary.
     newHash = createHash(directories.get('folder1'))
-
+#
     #newHash = createHash(directories)
 
     print(newHash)
