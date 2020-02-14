@@ -1,8 +1,11 @@
 import os
 import hashlib
 
-
-# Creat hash of a directory
+'''
+Receives a dictionary of directories.
+Iterates through the dictionary creating a hash for each value and writes it to a new dictionary
+with a matching key. 
+'''
 def createHash(directory, numDirectories):
     newHash = {}
     directory = directory
@@ -10,13 +13,12 @@ def createHash(directory, numDirectories):
     #directory = 'C:\\Users\\Geoff\\Documents\\hashTest'
     keys = []
     keys = list(directory.keys())
-    print(keys[0])
 
     count = 0
     while(count < numDirectories):
         tempDir = directory.get(keys[count])
         SHAhash = hashlib.md5()
-        print("Hashing: ", tempDir)
+        #print("Hashing: ", tempDir)
         try:
             for root, dirs, files in os.walk(tempDir):
                 for names in files:
@@ -47,13 +49,14 @@ def createHash(directory, numDirectories):
         newHash.update({keys[count]: SHAhash})
         count+=1
 
-    print("leaving createHash()....", newHash.keys())
     return newHash
 
-#Reads in a directory path from a file.
-#Directory path is used in createHash()
+
+'''
+Reads in a directory path from a file.
+Directory path is used in createHash()
+'''
 def getDirectory():
-    print("Getting the directory from file")
     directories = {}
 
     try:
@@ -76,9 +79,11 @@ def getDirectory():
 
     return directories
 
-#Reads file to get keys and hashes
+
+'''
+Reads file to get keys and hashes
+'''
 def getHashes():
-    print("Get Current Hashes")
     hashes = {}
     try:
         with open('C:\\Users\\Geoff\\Documents\\hashTest\\directories.txt') as fin:
@@ -99,9 +104,48 @@ def getHashes():
         return -2
     return hashes
 
-def compareHash():
-    print("Compare Hash")
 
+'''
+Receives two dictionaries and compares hashes based on matching keys
+Returns dictionary with the same key as all the other dicts
+If the hashes match the value is True else False
+'''
+def compareHash(hashes, newHash, numDirectories):
+    hashes = hashes
+    newHash = newHash
+    numDirectories = numDirectories
+    keys = list(hashes.keys())
+
+    compareResults = {}
+
+    count = 0
+    while(count < numDirectories):
+        hashOne = hashes.get(keys[count])
+        hashTwo = newHash.get(keys[count]).hexdigest()
+
+        if(hashOne == str(hashTwo)):
+            compareResults.update({keys[count]: True})
+        else:
+            compareResults.update({keys[count]: False})
+
+        count+=1
+
+    return compareResults
+'''
+Writes data to log based on whether hashes match or not
+'''
+def writeLog(compareResults):
+    print("Write log")
+
+    return 0
+
+'''
+If there is no hash value for a directory
+Then one will be added.
+'''
+def updateDirectories():
+    print("Update directories")
+    return 0
 
 def main():
     #Dictionaries for directory path and hash
@@ -111,10 +155,8 @@ def main():
     numDirectories = len(directories)
     newHash = createHash(directories, numDirectories)
 
-    #prints the hash to the screen
-    print(newHash.get('folder1').hexdigest())
-    print(newHash.get('folder2').hexdigest())
-    print(newHash.get('folder3').hexdigest())
+    compareResults = compareHash(hashes, newHash, numDirectories)
+    writeLog(compareResults)
 
 if __name__ == "__main__":
     main()
