@@ -13,7 +13,6 @@ def createHash(directory, numDirectories):
     newHash = {}
     directory = directory
     numDirectories = numDirectories
-    #directory = 'C:\\Users\\Geoff\\Documents\\hashTest'
     keys = []
     keys = list(directory.keys())
 
@@ -21,7 +20,6 @@ def createHash(directory, numDirectories):
     while(count < numDirectories):
         tempDir = directory.get(keys[count])
         SHAhash = hashlib.md5()
-        #print("Hashing: ", tempDir)
         try:
             for root, dirs, files in os.walk(tempDir):
                 for names in files:
@@ -39,7 +37,6 @@ def createHash(directory, numDirectories):
                         buf = fin.read(4096)
                         if not buf:
                             break
-                        #SHAhash.update(hashlib.md5(buf).hexdigest())
                         SHAhash.update(hashlib.md5(buf).digest())
 
                     fin.close()
@@ -64,8 +61,7 @@ def writeNewHash(filePath, directories, hashes, numDirectories):
     needUpdate = False
 
     try:
-        count = 0
-        while(count < len(keys)):
+        for count in range(len(keys)):
             if(hashes.get(keys[count]) == 'null'):
                 needUpdate = True
                 newKey = createHash(directories, numDirectories)
@@ -89,7 +85,6 @@ def writeNewHash(filePath, directories, hashes, numDirectories):
             fout.close()
             for line in directoryText:
                 if(line[0] == '#'):
-                    testValue = "###BEGIN###:::"
                     if(line.strip() == '###BEGIN###:::'):
                         continue
                     else:
@@ -124,10 +119,8 @@ def getDirectory(filePath):
     try:
         with open(filePath) as fin:
             directoriesList = fin.readlines()
-            numDirectories = len(directoriesList)
 
-            counter = 0
-            while(counter < numDirectories):
+            for counter in range(len(directoriesList)):
                 tempDirList = directoriesList[counter].split(':', 3)
                 if (tempDirList[0][0] != "#"):
                     directories.update({tempDirList[0]: tempDirList[1]})
@@ -150,10 +143,8 @@ def getHashes(filePath):
     try:
         with open(filePath) as fin:
             hashesList = fin.readlines()
-            numDirectories = len(hashesList)
 
-            counter = 0
-            while(counter < numDirectories):
+            for counter in range(len(hashesList)):
                 tempHashList = hashesList[counter].split(':', 3)
                 if(tempHashList[0][0] != "#"):
                     hashes.update({tempHashList[0]: tempHashList[2]})
@@ -176,8 +167,7 @@ def compareHash(hashes, newHash, numDirectories):
 
     compareResults = {}
 
-    count = 0
-    while(count < numDirectories):
+    for count in range(numDirectories):
         hashOne = hashes.get(keys[count])
         hashTwo = newHash.get(keys[count]).hexdigest()
 
@@ -225,6 +215,7 @@ def writeLog(compareResults, directories):
 
 
 def main():
+    #add function at top to get filepath
     filePath = 'C:\\Users\\Geoff\\Documents\\hashTest\\directories.txt'
 
     #Dictionaries for directory path and hash
